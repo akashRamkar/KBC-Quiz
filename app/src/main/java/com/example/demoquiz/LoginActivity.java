@@ -15,7 +15,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
     private static final int RC_SIGN_IN = 1;
-    private GoogleApiClient mGoogleSignInClient;
+    private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "LoginActivity";
 
     @Override
@@ -61,12 +63,21 @@ public class LoginActivity extends AppCompatActivity {
         forgotPass=findViewById(R.id.ForgotPassBtn);
         loadingBar=new ProgressDialog(this);
         googleSignInButton=findViewById(R.id.LGoogle);
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        /* Configure Google Sign In
+          GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
+         */
+
+
+        // Configure sign-in to request the user's ID, email address, and basic
+// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+/*
         mGoogleSignInClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
@@ -77,6 +88,11 @@ public class LoginActivity extends AppCompatActivity {
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+ */
+        //mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,9 +119,14 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
     private void signIn()
-    {
+    { /*
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleSignInClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        */
+//        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+//        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivity(mGoogleSignInClient.getSignInIntent(),RC_SIGN_IN);
+
     }
 
     @Override
